@@ -1,22 +1,48 @@
+import { AppErro } from "../error/appError.js";
 import User from "../model/User.js";
+import { userValidator } from "../validators/userValidator.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export class userService {
-    static async registerUser(user){
+    static async registerUser(data){
+        await userValidator.registerEmail(data.email)
+        await userValidator.registerPassword(data.password, data.passwordConfirm)
 
-        //verificando se o email já esta sendo usado
-        const email = await User.findOne({where: {email: user.email}})
-        if(email){
-            throw new Error('Usúario já existente!')
+        //criptografando senha
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(data.password, salt)
+
+        const newUser = {
+            name: data.name,
+            email: data.email,
+            password: hash
         }
 
-        //verificando se as senhas batem
-        if(user.password !== user.passwordConfirm) {
-            throw new Error('Senhas não correspondem!') 
-        }    
-        
-        //verificando o mínimo de cracteres da senha 
-        if(user.password.length < 6){
-            throw new Error('Senha deve ter no mínimo 6 caracteres!')
+        const user = await User.create(newUser) //salvando no banco
+
+        return {
+            name: user.name,
+            email: user.email,
+            id: user.id
         }
+    }
+
+    static async loginUser(data) {
+        //verificando se usuario existe
+        const userDB = await User.findOne({where: {email: data.email}})
+        if(!userDB) {
+            throw new AppErro('Usuário não encontrado', 404, 'USER_NOT_EXIST')
+        }
+
+        //verificando senha
+        const match = await bcrypt.compare(data.password, userDB.password)
+        if(!match) {
+            throw new AppErro('Senha incorreta!', 400, 'INVALID_PASSWORD');            
+        }
+
+        //criando token
+        const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '1h'})
+        return token
     }
 }
