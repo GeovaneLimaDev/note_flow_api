@@ -6,6 +6,7 @@ import { errorHandler } from "./middlewares/errorMiddleware.js"
 import User from "./model/User.js"
 import Notes from "./model/Notes.js"
 import Tags from "./model/Tags.js"
+import NoteTags from "./model/NotesTags.js"
 
 import { UserRoutes } from "./routes/userRoutes.js"
 import { NotesRoutes } from "./routes/notesRoutes.js"

@@ -5,11 +5,10 @@ import User from "./User.js";
 const Notes = conn.define('Notes', {
     title: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
     },
     content: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: DataTypes.TEXT
     }
 })
 
