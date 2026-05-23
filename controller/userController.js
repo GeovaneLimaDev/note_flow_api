@@ -21,8 +21,8 @@ export class UserController{
     static async login(req, res, next) {
         try {
             const user = req.body
-            const token = await userService.loginUser(user)
-            res.status(200).json({message: 'Usuário autenticado', token})
+            const authentication = await userService.loginUser(user)
+            res.status(200).json({message: 'Usuário autenticado', authentication})
         }catch(err){
             next(err)
         }

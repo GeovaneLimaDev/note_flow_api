@@ -1,12 +1,10 @@
 import { AppErro } from "../error/appError.js";
 import { removeCopyArray } from "../ultils/removeCopyArray.js"; 
 import Tags from "../model/Tags.js";
-import { where } from "sequelize";
-import { NoteTagsService } from "./noteTagsService.js";
 
 export class TagsService {
 
-    static async addTag(tags, noteId, userId) {
+    static async addTag(tags, userId) {
         //padroniza as tags
         const tagsLowerCase = tags.map(item => {
             const tagTrim = item.trim()

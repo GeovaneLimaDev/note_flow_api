@@ -1,12 +1,9 @@
 import express from "express"
-import { conn } from "./db/conn.js"
+import { conn } from "./db/connection.js"
 import { errorHandler } from "./middlewares/errorMiddleware.js"
 
-// models 
-import User from "./model/User.js"
-import Notes from "./model/Notes.js"
-import Tags from "./model/Tags.js"
-import NoteTags from "./model/NotesTags.js"
+// relação das tabelas 
+import './db/index.js'
 
 import { UserRoutes } from "./routes/userRoutes.js"
 import { NotesRoutes } from "./routes/notesRoutes.js"

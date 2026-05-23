@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
-import { conn } from "../db/conn.js";
-import User from "./User.js";
-import Notes from "./Notes.js";
+import { conn } from "../db/connection.js";
 
 const Tags = conn.define('Tags', {
     name: {
@@ -9,8 +7,5 @@ const Tags = conn.define('Tags', {
         allowNull: false
     }
 })
-
-Tags.belongsTo(User)
-User.hasMany(Tags)
 
 export default (Tags) 

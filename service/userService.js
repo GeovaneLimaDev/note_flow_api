@@ -34,15 +34,20 @@ export class userService {
         if(!userDB) {
             throw new AppErro('Usuário não encontrado', 404, 'USER_NOT_EXIST')
         }
-
         //verificando senha
         const match = await bcrypt.compare(data.password, userDB.password)
         if(!match) {
             throw new AppErro('Senha incorreta!', 400, 'INVALID_PASSWORD');            
         }
-
         //criando token
         const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '1h'})
-        return token
+        const user = {
+            name: userDB.name,
+            email: userDB.email,
+            id: userDB.id,
+            token: token
+        }
+
+        return user
     }
 }

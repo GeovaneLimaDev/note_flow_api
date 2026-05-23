@@ -12,7 +12,7 @@ export function AuthToken(req, res, next) {
     
     try{
         const result = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(result)
+        
         req.userid = result.id
         next()
     }catch(err){
