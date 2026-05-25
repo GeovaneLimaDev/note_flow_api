@@ -1,24 +1,19 @@
 import { AppErro } from "../error/appError.js";
 import { removeCopyArray } from "../ultils/removeCopyArray.js"; 
 import Tags from "../model/Tags.js";
+import { TagsValidator } from "../validators/tagsValidator.js";
 
 export class TagsService {
 
+    //adicionando tag com nota
     static async addTag(tags, userId) {
-        //padroniza as tags
-        const tagsLowerCase = tags.map(item => {
-            const tagTrim = item.trim()
-            const tagLower = tagTrim.toLowerCase()
-            if(tagLower.length < 3){
-                throw new AppErro('Tag muito curta', 400, 'VERY_SHORT_TAG')
-            }
+        //padroniza e valida as tags
+        const tagsStandardized = TagsValidator.tagsValidatorArrays(tags)
 
-            return tagLower
-        })
-
-        const arrayNotCopy = removeCopyArray(tagsLowerCase) // remove as duplicatas no array origina
+        // remove as duplicatas no array origina
+        const arrayNotCopy = removeCopyArray(tagsStandardized)
+        //adiciona no banco e pega os ids
         const tagsID = []
-
         for (const tag of arrayNotCopy) {
             // verificando banco de dados
             const tagDB = await Tags.findOne({
@@ -40,5 +35,10 @@ export class TagsService {
         }
 
         return tagsID
+    }
+
+    // adicionando tag ao banco sem fazer relação com nota
+    static async() {
+        
     }
 }

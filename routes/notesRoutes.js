@@ -4,6 +4,8 @@ import { AuthToken } from '../middlewares/authMiddware.js'
 
 export const NotesRoutes = express.Router()
 
-NotesRoutes.post('/create', AuthToken, NotesController.createNotes)
-NotesRoutes.get('/', AuthToken, NotesController.getNotes)
+NotesRoutes.post('/', AuthToken, NotesController.createNotes)
+NotesRoutes.get('/', AuthToken, NotesController.getNotesAll)
+NotesRoutes.get('/:id', AuthToken, NotesController.getNote)
 NotesRoutes.patch('/:id', AuthToken, NotesController.updateNotes )
+NotesRoutes.delete('/:id', AuthToken, NotesController.deleteNotes)

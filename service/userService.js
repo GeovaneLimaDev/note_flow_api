@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 
 export class userService {
     static async registerUser(data){
+        await userValidator.registerName(data.name)
         await userValidator.registerEmail(data.email)
         await userValidator.registerPassword(data.password, data.passwordConfirm)
 
@@ -13,18 +14,23 @@ export class userService {
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(data.password, salt)
 
-        const newUser = {
+        //salvando no banco
+        const user = await User.create({
             name: data.name,
             email: data.email,
             password: hash
-        }
+        })
 
-        const user = await User.create(newUser) //salvando no banco
+        //gerando token de autenticação
+        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '3h'})
 
         return {
-            name: user.name,
-            email: user.email,
-            id: user.id
+            user: { 
+                name: user.name,
+                email: user.email,
+                id: user.id,
+            },
+            token: token
         }
     }
 
@@ -40,7 +46,7 @@ export class userService {
             throw new AppErro('Senha incorreta!', 400, 'INVALID_PASSWORD');            
         }
         //criando token
-        const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '1h'})
+        const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '3h'})
         const user = {
             name: userDB.name,
             email: userDB.email,

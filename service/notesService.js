@@ -14,7 +14,8 @@ export class NotesService {
         const newNote = {
             title: title,
             content: note.content,
-            UserId: userId
+            UserId: userId,
+            delete: false
         }
         
         const newCreate = await Notes.create(newNote) //salvar no banco
@@ -29,32 +30,46 @@ export class NotesService {
             include: Tags
         })
 
+        if(NotesAll.length === 0) {
+            return {
+                message: 'O usuário não tem notas adicionadas até o momento!'}
+        } 
+
         return NotesAll
     }
 
-    //buscando mais de uma nota
-    static async getNote() {
+    //buscando uma nota
+    static async getNote(userId, noteId) {
+        const note = await Notes.findOne({
+            where: {UserId: userId, id: noteId},
+            include: Tags
+        })
+        //verificando existencia da nota
+        if(!note) {
+            throw new AppErro('Nota não existente!', 404, 'NOT_FUND');
+        }
 
+        return note
     }
 
     //editando nota
     static async updateNotes(userId, noteId, noteData){
-        //validando existencia do body
+        //validando existencia do body e se tem ao menos um campo que atualizavel
         const keys = Object.keys(noteData)
         const fieldVilid = keys.find((item) => item === 'title' || item === 'content') 
         if(keys.length === 0 || !fieldVilid){
-            throw new AppErro('Dados necessarios não enviados!', 400, 'EMPTY_BODY')
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
         }
 
+        //verificando existencia da nota no banco 
         const noteDB = await Notes.findOne({
             where: {UserId: userId, id: noteId}
         }) 
-        //verificando existencia da nota no banco 
         if(!noteDB) {
             throw new AppErro('Nota não existente!', 404, 'NOT_FOUND')
         }
-        // validando dados
 
+        // validando dados
         const updateData = {
             title: noteData.title ? await NoteValidator.title(noteData.title) : noteDB.title,
             content: noteData.content ? noteData.content.trim() : ""
@@ -68,5 +83,23 @@ export class NotesService {
             userId: userId
         }
         return newNote
+    }
+
+    //deletando nota
+    static async deleteNotes(userId, noteId) {
+        //essa uqery ja checa se a nota é existente no banco e se é do usuário
+        const noteDB = await Notes.findOne({
+            where: {UserId: userId, id: noteId},
+        })
+
+        if(!noteDB){
+            throw new AppErro('Nota não encontrada!', 404, 'NOT_FUND')
+        }
+
+        const deleteNote = {
+            delete: true
+        }
+
+        await Notes.update(deleteNote, {where: {id: noteDB.id}})
     }
 }

@@ -8,6 +8,10 @@ const Notes = conn.define('Notes', {
     },
     content: {
         type: DataTypes.TEXT
+    },
+    delete: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 })
 
