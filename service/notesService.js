@@ -27,7 +27,7 @@ export class NotesService {
     static async getNotesAll(userId) {
         const NotesAll = await Notes.findAll({
             where: {UserId: userId},
-            include: Tags
+            include: Tags,
         })
 
         if(NotesAll.length === 0) {
@@ -42,7 +42,7 @@ export class NotesService {
     static async getNote(userId, noteId) {
         const note = await Notes.findOne({
             where: {UserId: userId, id: noteId},
-            include: Tags
+            include: Tags,
         })
         //verificando existencia da nota
         if(!note) {
@@ -63,7 +63,7 @@ export class NotesService {
 
         //verificando existencia da nota no banco 
         const noteDB = await Notes.findOne({
-            where: {UserId: userId, id: noteId}
+            where: {UserId: userId, id: noteId},
         }) 
         if(!noteDB) {
             throw new AppErro('Nota não existente!', 404, 'NOT_FOUND')

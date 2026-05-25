@@ -34,7 +34,7 @@ export class userValidator{
         }
         
         //email já existente no sistema?
-        const emailExist = await User.findOne({where: {email: email}})
+        const emailExist = await User.findOne({where: {email: email}, raw: true})
         if(emailExist) {
             throw new AppErro('E-mail já existente', 400, 'EMAIL_EXISTING_SYSTEM')
         }

@@ -36,7 +36,7 @@ export class userService {
 
     static async loginUser(data) {
         //verificando se usuario existe
-        const userDB = await User.findOne({where: {email: data.email}})
+        const userDB = await User.findOne({where: {email: data.email}, raw: true })
         if(!userDB) {
             throw new AppErro('Usuário não encontrado', 404, 'USER_NOT_EXIST')
         }
@@ -47,13 +47,13 @@ export class userService {
         }
         //criando token
         const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '3h'})
-        const user = {
-            name: userDB.name,
-            email: userDB.email,
-            id: userDB.id,
+        return {
+            user: {
+                    name: userDB.name,
+                    email: userDB.email,
+                    id: userDB.id,
+            },
             token: token
         }
-
-        return user
     }
 }

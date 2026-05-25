@@ -7,14 +7,19 @@ export class TagsService {
 
     //adicionando tag com nota
     static async addTag(tags, userId) {
-        //padroniza e valida as tags
-        const tagsStandardized = TagsValidator.tagsValidatorArrays(tags)
+        //padroniza as tags
+        const arrayValid = tags.map(item => {
+            const tagStandard = item.trim().toLowerCase()
 
+            return tagStandard
+        })
         // remove as duplicatas no array origina
-        const arrayNotCopy = removeCopyArray(tagsStandardized)
+        const arrayNotCopy = removeCopyArray(arrayValid)
         //adiciona no banco e pega os ids
         const tagsID = []
         for (const tag of arrayNotCopy) {
+            await TagsValidator.tagsValid(tag)
+
             // verificando banco de dados
             const tagDB = await Tags.findOne({
                 where: {UserId: userId, name: tag}
@@ -38,7 +43,47 @@ export class TagsService {
     }
 
     // adicionando tag ao banco sem fazer relação com nota
-    static async() {
-        
+    static async createTag(tag, userId) {
+        //valida a tag
+        await TagsValidator.tagsValid(tag, userId)
+        //verifica existencia no banco
+        const tagDB = await Tags.findOne({
+            where: {UserId: userId, name: tag},
+        })
+        if(tagDB){
+            throw new AppErro('Tag já existente"', 400, 'TAG_EXISTING_SYSTEM')
+        }
+        //padroniza
+        const newTag = tag.trim().toLowerCase()
+
+        const result = await Tags.create({name: newTag, UserId: userId})
+        return result
+    }
+
+    //deletando tags
+    static async deleteTag(tagId, userId) {
+        //verificando se tag existe
+        const tagDB = await Tags.findOne({
+            where: {UserId: userId, id: tagId}
+        })
+
+        if(!tagDB) {
+            throw new AppErro('Teg não encontrada!', 404, 'NOT_FUND');
+        }
+
+        await Tags.destroy({where: {id: tagDB.id}})
+    }
+
+    //buscando tags 
+    static async getTagsAll(userid){
+        const tags = await Tags.findAll({
+            where: {UserId: userid},
+        })
+
+        if(tags.length === 0){
+        return {message: 'O usuário não tem nenhuma tag ate o momento'}
+        }
+
+        return tags
     }
 }

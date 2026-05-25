@@ -9,11 +9,13 @@ User.hasMany(Notes)
 // Relações Notes
 Notes.belongsTo(User)
 Notes.belongsToMany(Tags, {
-    through: 'note_tags'
+    through: 'note_tags',
+    onDelete: 'CASCADE'
 })
 
 // relações tags
 Tags.belongsTo(User)
 Tags.belongsToMany(Notes, {
-    through: 'note_tags'
+    through: 'note_tags',
+    onDelete: 'CASCADE'
 })
