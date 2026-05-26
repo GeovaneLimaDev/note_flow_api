@@ -5,12 +5,11 @@ import { TagsValidator } from "../validators/tagsValidator.js";
 
 export class TagsService {
 
-    //adicionando tag com nota
+    //adicionando tag com nota/documento
     static async addTag(tags, userId) {
         //padroniza as tags
         const arrayValid = tags.map(item => {
             const tagStandard = item.trim().toLowerCase()
-
             return tagStandard
         })
         // remove as duplicatas no array origina
@@ -18,8 +17,8 @@ export class TagsService {
         //adiciona no banco e pega os ids
         const tagsID = []
         for (const tag of arrayNotCopy) {
+            // valida as tags
             await TagsValidator.tagsValid(tag)
-
             // verificando banco de dados
             const tagDB = await Tags.findOne({
                 where: {UserId: userId, name: tag}
@@ -28,7 +27,7 @@ export class TagsService {
             if(tagDB){
                 tagsID.push(tagDB.id) // salva ids das tags para salvar no banco de relação
             }else{
-                //adiciona no banco 
+                // adiciona no banco 
                 const newTag = {
                     name: tag,
                     UserId: userId
@@ -42,7 +41,7 @@ export class TagsService {
         return tagsID
     }
 
-    // adicionando tag ao banco sem fazer relação com nota
+    // adicionando tag ao banco sem fazer relação com nota ou documento 
     static async createTag(tag, userId) {
         //valida a tag
         await TagsValidator.tagsValid(tag, userId)

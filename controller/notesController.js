@@ -1,6 +1,8 @@
 import { NotesService } from "../service/notesService.js"
+import {Note_Tag_Service} from "../service/tagReportService.js"
 
 export class NotesController {
+    //cria nota
     static async createNotes(req, res, next) {
         try {
             const userId = req.userid
@@ -12,7 +14,7 @@ export class NotesController {
             next(err)
         }
     }
-
+    //busca todas as notas
     static async getNotesAll(req, res, next) {
         try{
             const userId = req.userid
@@ -23,7 +25,7 @@ export class NotesController {
             next(err)
         }
     }
-
+    //busca um nota específica 
     static async getNote(req, res, next) {
         try {
             const userId = req.userid
@@ -35,7 +37,7 @@ export class NotesController {
             next(err)
         }
     }
-
+    //edita nota 
     static async updateNotes(req, res, next) {
         try {
             const userId = req.userid
@@ -51,7 +53,7 @@ export class NotesController {
             next(err)
         }
     }
-
+    //deleta nota
     static async deleteNotes(req, res, next) {
         try {
             const noteId = req.params.id
@@ -61,6 +63,32 @@ export class NotesController {
             res.status(200).json({
                 message: 'Nota deletada com sucesso!'
             })
+        } catch (err) {
+            next(err)
+        }
+    }
+    //remove tag da nota sem deletar nenhuma entidade
+    static async removeTagOfNote(req, res, next) {
+        try {
+            const noteId = req.params.noteId
+            const tagId = req.params.tagId
+            const userId = req.userid
+
+            await Note_Tag_Service.removeTagOfNote(noteId, tagId, userId)
+            res.status(200).json('Tag removida com sucesso!')
+        } catch (err) {
+            next(err)
+        }
+    }
+    //adicona tag a alguma nota
+    static async addTagOfNote(req, res, next) {
+        try {
+            const noteId = req.params.noteId
+            const tags = req.body.tags
+            const userId = req.userid
+
+            await Note_Tag_Service.addTagOfNote(noteId, tags, userId)
+            res.status(200).json('Tag adicionada com sucesso!')
         } catch (err) {
             next(err)
         }

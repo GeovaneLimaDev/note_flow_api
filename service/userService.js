@@ -22,7 +22,7 @@ export class userService {
         })
 
         //gerando token de autenticação
-        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '3h'})
+        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '24h'})
 
         return {
             user: { 
@@ -46,7 +46,7 @@ export class userService {
             throw new AppErro('Senha incorreta!', 400, 'INVALID_PASSWORD');            
         }
         //criando token
-        const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '3h'})
+        const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '24h'})
         return {
             user: {
                     name: userDB.name,
