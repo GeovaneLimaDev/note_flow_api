@@ -47,7 +47,7 @@ export class NotesController {
 
             res.status(200).json({
                 message: 'Update realizado com sucesso!',
-                result
+                note: result
             })
         } catch (err) {
             next(err)
@@ -73,8 +73,9 @@ export class NotesController {
             const noteId = req.params.noteId
             const tagId = req.params.tagId
             const userId = req.userid
+            const type = 'note'
 
-            await Note_Tag_Service.removeTagOfNote(noteId, tagId, userId)
+            await Note_Tag_Service.removeTagOfNoteOrDoc(noteId, tagId, userId, type)
             res.status(200).json('Tag removida com sucesso!')
         } catch (err) {
             next(err)
@@ -86,8 +87,10 @@ export class NotesController {
             const noteId = req.params.noteId
             const tags = req.body.tags
             const userId = req.userid
+            const type = 'note'
 
-            await Note_Tag_Service.addTagOfNote(noteId, tags, userId)
+            await Note_Tag_Service.addTagOfNoteOrDoc(noteId, tags, userId, type)
+            
             res.status(200).json('Tag adicionada com sucesso!')
         } catch (err) {
             next(err)

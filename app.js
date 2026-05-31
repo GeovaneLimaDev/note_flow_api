@@ -8,6 +8,7 @@ import './db/index.js'
 import { UserRoutes } from "./routes/userRoutes.js"
 import { NotesRoutes } from "./routes/notesRoutes.js"
 import { TagsRoutes } from "./routes/tagsRoutes.js"
+import { DocumentsRouter } from "./routes/documentsRoutes.js"
 
 import dotenv from "dotenv"
 
@@ -21,6 +22,7 @@ app.use(express.json())
 
 
 //routes
+app.use('/documents', DocumentsRouter)
 app.use('/tags', TagsRoutes)
 app.use('/notes', NotesRoutes)
 app.use('/', UserRoutes)

@@ -1,24 +1,26 @@
 import { DataTypes } from "sequelize";
 import { conn } from "../db/connection.js";
 
-const Notes = conn.define('Notes', {
+const Documents = conn.define('Documents', {
     title: {
         type: DataTypes.STRING,
         allowNull: false
     },
+
     content: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: true
     },
+
     deleteAt: {
         type: DataTypes.DATE,
         allowNull: true
     },
+
     type: {
         type: DataTypes.STRING,
         allowNull: false
     }
 })
 
-
-
-export default (Notes)
+export default (Documents)

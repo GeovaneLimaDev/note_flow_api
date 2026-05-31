@@ -1,6 +1,6 @@
 import { AppErro } from "../error/appError.js";
 
-export class NoteValidator {
+export class NoteDocValidator {
     static title(title) {
         if(title.length < 3){
             throw new AppErro('Titulo muito curto!', 400, 'VERY_SHORT_TITLE');
