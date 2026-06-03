@@ -39,17 +39,4 @@ export class TagsController{
             next(err)
         } 
     }
-
-    static async updateTag(req, res, next) {
-        try {
-            const userId = req.userid
-            const newTag = req.body.name
-            const tagId = req.params.id
-            const tagsArray = await TagsService.updateTag(tagId, userId, newTag)
-
-            res.status(200).json(tagsArray)
-        } catch (err) {
-            next(err)
-        } 
-    }
 }

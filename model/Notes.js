@@ -16,6 +16,11 @@ const Notes = conn.define('Notes', {
     type: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+
+    archive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 })
 

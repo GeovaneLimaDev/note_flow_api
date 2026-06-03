@@ -2,22 +2,21 @@ import { where } from "sequelize";
 import { AppErro } from "../error/appError.js";
 import Documents from "../model/Documents.js";
 import Tags from "../model/Tags.js";
-import { NoteDocValidator } from "../validators/noteDocValidator.js";
+import { NotesValidator } from "../validators/notesValidator.js";
 import { TagsService } from "./tagsService.js";
 
 export class DocumentsService {
     //cria documentos
     static async createDocument(userId, docData){
-        //valida titulo 
-        const title = NoteDocValidator.title(docData.title)
-        //valida tags
         const tagsId = await TagsService.addTag(docData.tags, userId)
         //cria objeto que sera salvo no banco
         const createDoc = {
-            title: title,
+            title: docData.title.trim(),
             content: docData.content,
             type: 'document',
             UserId: userId,
+            deleteAt: null,
+            archive: false
         }
 
         const newDoc = await Documents.create(createDoc)
@@ -66,15 +65,6 @@ export class DocumentsService {
     }
     //editar documento
     static async updateDocument(docId, userId, docData) {
-        //verificando body
-        if(!docData) {
-            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
-        }
-        const keys = Object.keys(docData)
-        const field = keys.find(item => item === 'title' || item === 'content')
-        if(keys.length === 0 || !field){
-            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
-        }
         //verificando existencia no banco  
         const docDB = await Documents.findOne({
             where: {UserId: userId, id: docId, deleteAt: null}
@@ -84,8 +74,8 @@ export class DocumentsService {
         }
         //validando dados enviados pelo usuário 
         const updateData = {
-            title: docData.title ? await NoteDocValidator.title(docData.title) : docDB.title,
-            content: docData.content ? docData.content.trim() : docDB.content
+            title: docData.title ? docData.title.trim() : docDB.title,
+            content: docData.content 
         }
 
         await Documents.update(updateData, {where: {id: docId}})
@@ -97,5 +87,23 @@ export class DocumentsService {
         }
 
         return newDoc
+    }
+    //arquivando nota
+    static async archiveDocument(docId, userId, archive){
+        const docDB = await Documents.findOne({
+            where: {UserId: userId, id: docId}
+        })
+
+        if(!docDB) {
+            throw new AppErro('Documento não existente!', 404, 'NOT_FOUND')
+        }
+
+        if(archive){
+            await Documents.update({archive: true}, {where: {id: docId}})
+            return 'Documento arquivado com sucesso!'
+        }else{
+            await Documents.update({archive: false}, {where: {id: docId}})
+            return 'Documento retirado dos arquivados!'
+        }
     }
 }

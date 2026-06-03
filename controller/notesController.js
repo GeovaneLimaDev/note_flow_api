@@ -96,4 +96,20 @@ export class NotesController {
             next(err)
         }
     }
+    //arquivando nota
+    static async archiveNote(req, res, next) {
+        try {
+            const noteId = req.params.noteId
+            const userId = req.userid
+            const archive = req.body.archive
+
+            const message = await NotesService.archiveNote(noteId, userId, archive)
+
+            res.status(200).json({
+                message: message
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
 }

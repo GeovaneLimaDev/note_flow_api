@@ -20,6 +20,11 @@ const Documents = conn.define('Documents', {
     type: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+
+    archive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 })
 

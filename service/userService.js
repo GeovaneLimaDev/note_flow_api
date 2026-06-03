@@ -1,14 +1,15 @@
 import { AppErro } from "../error/appError.js";
 import User from "../model/User.js";
-import { userValidator } from "../validators/userValidator.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export class userService {
     static async registerUser(data){
-        await userValidator.registerName(data.name)
-        await userValidator.registerEmail(data.email)
-        await userValidator.registerPassword(data.password, data.passwordConfirm)
+        //verificando se email ja existe
+        const result = await User.findOne({where: {email: data.email}})
+        if(result) {
+            throw new AppErro('E-mail já existente', 400, 'EMAIL_EXISTING_SYSTEM')
+        }
 
         //criptografando senha
         const salt = await bcrypt.genSalt(10)

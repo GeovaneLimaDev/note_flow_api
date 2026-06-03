@@ -2,23 +2,20 @@ import { where } from "sequelize";
 import { AppErro } from "../error/appError.js";
 import Notes from "../model/Notes.js";
 import Tags from "../model/Tags.js";
-import { NoteDocValidator } from "../validators/noteDocValidator.js";
 import { TagsService } from "./tagsService.js";
 
 
 export class NotesService {
     //criando nota
     static async createNotes(userId, note) {
-        //validando titulo
-        const title = NoteDocValidator.title(note.title) 
-        // validando tags
         const tagsId = await TagsService.addTag(note.tags, userId)
         const newNote = {
-            title: title,
+            title: note.title.trim(),
             content: note.content,
             UserId: userId,
             deleteAt: null,
-            type: 'note'
+            type: 'note',
+            archive: false
         }
         
         const newCreate = await Notes.create(newNote) //salvar no banco
@@ -57,16 +54,6 @@ export class NotesService {
 
     //editando nota
     static async updateNotes(userId, noteId, noteData){
-        //validando existencia do body e se tem ao menos um campo que atualizavel
-        if(!noteData) {
-            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
-        }
-        const keys = Object.keys(noteData)
-        const fieldVilid = keys.find((item) => item === 'title' || item === 'content') 
-        if(keys.length === 0 || !fieldVilid){
-            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
-        }
-
         //verificando existencia da nota no banco 
         const noteDB = await Notes.findOne({
             where: {UserId: userId, id: noteId, deleteAt: null},
@@ -75,10 +62,9 @@ export class NotesService {
             throw new AppErro('Nota não existente!', 404, 'NOT_FOUND')
         }
 
-        // validando dados
         const updateData = {
-            title: noteData.title ? await NoteDocValidator.title(noteData.title) : noteDB.title,
-            content: noteData.content ? noteData.content.trim() : noteDB.content
+            title: noteData.title ? noteData.title.trim() : noteDB.title,
+            content: noteData.content
         }
 
         await Notes.update(updateData, {where: {id: noteId}})
@@ -103,5 +89,23 @@ export class NotesService {
         }
 
         await Notes.update({deleteAt: new Date()}, {where: {id: noteDB.id}})
+    }
+    //arquivando nota
+    static async archiveNote(noteId, userId, archive){
+        const note = await Notes.findOne({
+            where: {UserId: userId, id: noteId}
+        })
+
+        if(!note) {
+            throw new AppErro('Nota não existente!', 404, 'NOT_FOUND')
+        }
+
+        if(archive){
+            await Notes.update({archive: true}, {where: {id: noteId}})
+            return 'Nota arquivada com sucesso!'
+        }else{
+            await Notes.update({archive: false}, {where: {id: noteId}})
+            return "Nota retirada dos arquivados!"
+        }
     }
 }

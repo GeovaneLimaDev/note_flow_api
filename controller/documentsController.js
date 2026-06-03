@@ -102,4 +102,20 @@ export class DocumentsController {
             next(err)
         }
     }
+    //arquivando documento
+    static async archiveDocument(req, res, next) {
+        try {
+            const userId = req.userid
+            const docId = req.params.docId
+            const archive = req.body.archive
+
+            const message = await DocumentsService.archiveDocument(docId, userId, archive)
+
+            res.status(200).json({
+                menssage: message
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
 }  
