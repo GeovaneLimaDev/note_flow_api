@@ -5,6 +5,9 @@ export class userValidator{
     //validação da área de registro 
     static register(req, res, next){
         const body = req.body 
+        if(!body){
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
         const keys = Object.keys(body)
         if(keys.length === 0) {
             throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
@@ -53,6 +56,9 @@ export class userValidator{
 
     static login (req, res, next) {
         const body = req.body 
+        if(!body){
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
         const keys = Object.keys(body)
         if(keys.length === 0) {
             throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')

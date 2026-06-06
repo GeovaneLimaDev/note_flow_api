@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 export function AuthToken(req, res, next) {
     const authHeader = req.headers.authorization
     if(!authHeader){
-        throw new AppErro('Não autorizado', 401, 'NOT_AUTHORIZED')
+        throw new AppErro('Token não autenticado', 401, 'NOT_AUTHORIZED')
     }
 
     const token = authHeader.split(' ')[1]

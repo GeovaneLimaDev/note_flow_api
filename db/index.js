@@ -2,15 +2,18 @@ import User from "../model/User.js";
 import Notes from "../model/Notes.js";
 import Tags from "../model/Tags.js";
 import Documents from "../model/Documents.js";
+import DocumentVersion from "../model/DocumentVersion.js";
 import { conn } from "./connection.js";
 
 // relações user
 User.hasMany(Notes)
 User.hasMany(Documents)
 User.hasMany(Tags)
+User.hasMany(DocumentVersion)
 
 //relações dos documentos 
 Documents.belongsTo(User)
+Documents.hasMany(DocumentVersion)
 Documents.belongsToMany(Tags, {
     through: 'docs_tags',
     onDelete: 'CASCADE'
@@ -33,3 +36,7 @@ Tags.belongsToMany(Documents, {
     through: 'docs_tags',
     onDelete: 'CASCADE'
 })
+
+// relações das versões dos documentos
+DocumentVersion.belongsTo(User)
+DocumentVersion.belongsTo(Documents)

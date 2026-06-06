@@ -6,6 +6,9 @@ export class NotesValidator {
     static createNote(req, res, next) {
         //validando body
         const body = req.body
+        if(!body){
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
         const keys = Object.keys(body)
         if(keys.length === 0) {
             throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
@@ -38,6 +41,9 @@ export class NotesValidator {
     static updateNote(req, res, next) {
         //validando body
         const body = req.body
+        if(!body){
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
         const keys = Object.keys(body)
         const fieldVilid = keys.find((item) => item === 'title' || item === 'content') 
         if(keys.length === 0 || !fieldVilid) {
@@ -60,6 +66,9 @@ export class NotesValidator {
 
     static archiveNote(req, res, next) {
         const body = req.body
+        if(!body){
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
         const keys = Object.keys(body)
         const fieldVilid = keys.find((item) => item === 'archive') 
         if(!body || !fieldVilid){
