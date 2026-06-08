@@ -23,7 +23,7 @@ app.use(express.json())
 
 
 //routes
-app.use('/documents/version', DocumentVersionRouter)
+app.use('/documents', DocumentVersionRouter)
 app.use('/documents', DocumentsRouter)
 app.use('/tags', TagsRoutes)
 app.use('/notes', NotesRoutes)

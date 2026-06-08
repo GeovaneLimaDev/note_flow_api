@@ -31,4 +31,23 @@ export class DocumentVersionValidator {
         }
         next()
     }
+    
+    static updateVersion(req, res, next) {
+        const body = req.body
+        if(!body) {
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
+
+        if(!body.titleVersion && isString(body.titleVersion)) {
+            throw new AppErro('Dados necessários não enviados e o titulo da versão não pode ser vazio!', 400, 'EMPTY_BODY')
+        }
+        if(body.titleVersion.length < 3){
+            throw new AppErro('Titulo da versão muito curto!', 400, 'VERY_SHORT_TITLE');
+        }
+
+        if(body.titleVersion.length > 255) {
+            throw new AppErro('Título da versão atingiu o máximo de caracteres!', 400, 'VERY_BIG_TITLE');
+        }
+        next()
+    }
 }
