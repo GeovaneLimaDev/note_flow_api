@@ -10,6 +10,7 @@ import { NotesRoutes } from "./routes/notesRoutes.js"
 import { TagsRoutes } from "./routes/tagsRoutes.js"
 import { DocumentsRouter } from "./routes/documentsRoutes.js"
 import { DocumentVersionRouter } from "./routes/DocVersionRouter.js"
+import { TrashRouter } from "./routes/trashRouter.js"
 
 import dotenv from "dotenv"
 
@@ -25,6 +26,7 @@ app.use(express.json())
 //routes
 app.use('/documents', DocumentVersionRouter)
 app.use('/documents', DocumentsRouter)
+app.use('/trash', TrashRouter)
 app.use('/tags', TagsRoutes)
 app.use('/notes', NotesRoutes)
 app.use('/', UserRoutes)
