@@ -46,7 +46,7 @@ export class DocumentsController {
             await DocumentsService.deleteDocuments(docId, userId)
 
             res.status(200).json({
-                menssage: 'Documento deletado com sucesso!'
+                menssage: 'Documento enviado para lixeira!'
             })
         } catch (err) {
             next(err)

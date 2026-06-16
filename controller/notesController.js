@@ -61,7 +61,7 @@ export class NotesController {
             await NotesService.deleteNotes(userId, noteId)
 
             res.status(200).json({
-                message: 'Nota deletada com sucesso!'
+                message: 'Nota enviada para lixeira!'
             })
         } catch (err) {
             next(err)
