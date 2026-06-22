@@ -3,6 +3,7 @@ import Notes from "../model/Notes.js";
 import Tags from "../model/Tags.js";
 import Documents from "../model/Documents.js";
 import DocumentVersion from "../model/DocumentVersion.js";
+import Folders from "../model/Folders.js";
 import { conn } from "./connection.js";
 
 // relações user
@@ -10,9 +11,13 @@ User.hasMany(Notes)
 User.hasMany(Documents)
 User.hasMany(Tags)
 User.hasMany(DocumentVersion)
+User.hasMany(Folders)
 
 //relações dos documentos 
 Documents.belongsTo(User)
+Documents.belongsTo(Folders, {
+    onDelete: 'SET NULL'
+})
 Documents.hasMany(DocumentVersion)
 Documents.belongsToMany(Tags, {
     through: 'docs_tags',
@@ -21,6 +26,9 @@ Documents.belongsToMany(Tags, {
 
 // Relações Notes
 Notes.belongsTo(User)
+Notes.belongsTo(Folders, {
+    onDelete: 'SET NULL'
+})
 Notes.belongsToMany(Tags, {
     through: 'note_tags',
     onDelete: 'CASCADE'
@@ -35,6 +43,14 @@ Tags.belongsToMany(Notes, {
 Tags.belongsToMany(Documents, {
     through: 'docs_tags',
     onDelete: 'CASCADE'
+})
+
+//relção das pastas 
+Folders.hasMany(Documents, {
+    onDelete: 'SET NULL'
+})
+Folders.hasMany(Notes, {
+    onDelete: 'SET NULL'
 })
 
 // relações das versões dos documentos
