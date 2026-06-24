@@ -1,30 +1,39 @@
-import User from "../model/User.js";
-import bcrypt from "bcryptjs";
-import { userService } from "../service/userService.js";
+import { UserService } from "../service/userService.js"
 
-export class UserController{
-    static async register(req, res, next){
-        try{
-            const data = req.body
-            const user = await userService.registerUser(data) 
-
-            res.status(201).json({
-                message: 'Usuário criado com sucesso!',
-                user
-            })
-            
-        }catch(err){
-            next(err)
-        }
-    }
-
-    static async login(req, res, next) {
+export class UserController {
+    static async getProfile(req, res, next) {
         try {
-            const user = req.body
-            const authentication = await userService.loginUser(user)
-            res.status(200).json({message: 'Usuário autenticado', authentication})
-        }catch(err){
+            const userId = req.userid
+
+            const profile = await UserService.getProfile(userId)
+            res.status(200).json(profile)
+        } catch (err) {
             next(err)
         }
     }
-} 
+
+    static async updateProfile(req, res, next) {
+        try {
+            const userId = req.userid
+            const newEmail = req.body.email 
+            const newName = req.body.name 
+
+            const message = await UserService.updateProfile(userId, newEmail, newName)
+            res.status(200).json(message)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async updadePassWord(req, res, next) {
+        try {
+            const newPassword = req.body.newPassword
+            const currentPassword = req.body.currentPassword
+            const userId = req.userid
+            const message = await UserService.updatePassWord(userId, newPassword, currentPassword)
+            res.status(200).json(message)
+        } catch (err) {
+            next(err)
+        }
+    }
+}

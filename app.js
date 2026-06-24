@@ -5,6 +5,7 @@ import { errorHandler } from "./middlewares/errorMiddleware.js"
 // relação das tabelas 
 import './db/index.js'
 
+import { AuthRoutes } from "./routes/authRoutes.js"
 import { UserRoutes } from "./routes/userRoutes.js"
 import { NotesRoutes } from "./routes/notesRoutes.js"
 import { TagsRoutes } from "./routes/tagsRoutes.js"
@@ -30,7 +31,8 @@ app.use('/documents', DocumentsRouter)
 app.use('/trash', TrashRouter)
 app.use('/tags', TagsRoutes)
 app.use('/notes', NotesRoutes)
-app.use('/', UserRoutes)
+app.use('/user', UserRoutes)
+app.use('/auth', AuthRoutes)
 
 //conf. do middleware de erro 
 app.use(errorHandler)
