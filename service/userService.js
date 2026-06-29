@@ -41,8 +41,8 @@ export class UserService{
     static async updatePassWord(userId, newPassword, currentPassword) {
         const userDB = await User.findOne({where: {id: userId}})
 
-        const march = await bcrypt.compare(currentPassword, userDB.password)
-        if(!march) {
+        const match = await bcrypt.compare(currentPassword, userDB.password)
+        if(!match) {
             throw new AppErro('Senha inválida!', 400, 'INVALID_PASSWORD');
         }
 
@@ -59,6 +59,23 @@ export class UserService{
         await User.update({password: hash}, {where: {id: userId}})
         return {
             message: 'Senha atualizada!'
+        }
+    }
+
+    static async  deleteProfile(userId, password) {
+        const userDB = await User.findOne({where: {id: userId}})
+        if(!userDB){
+            throw new AppErro('Usuário não existente!', 404, 'NOT_FUND')
+        }
+
+        const match = await bcrypt.compare(password, userDB.password)
+        if(!match) {
+            throw new AppErro('Senha inválida!', 400, 'INVALID_PASSWORD');
+        }
+
+        await User.destroy({where: {id: userId}})
+        return {
+            message: 'Conta excluida com sucesso!'
         }
     }
 }

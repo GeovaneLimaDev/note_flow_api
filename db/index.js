@@ -7,25 +7,41 @@ import Folders from "../model/Folders.js";
 import { conn } from "./connection.js";
 
 // relações user
-User.hasMany(Notes)
-User.hasMany(Documents)
-User.hasMany(Tags)
-User.hasMany(DocumentVersion)
-User.hasMany(Folders)
+User.hasMany(Notes, {
+    onDelete: 'CASCADE'
+})
+User.hasMany(Documents, {
+    onDelete: 'CASCADE'
+})
+User.hasMany(Tags, {
+    onDelete: 'CASCADE'
+})
+User.hasMany(DocumentVersion, {
+    onDelete: 'CASCADE'
+})
+User.hasMany(Folders, {
+    onDelete: 'CASCADE'
+})
 
 //relações dos documentos 
-Documents.belongsTo(User)
+Documents.belongsTo(User, {
+    onDelete: 'CASCADE'
+})
 Documents.belongsTo(Folders, {
     onDelete: 'SET NULL'
 })
-Documents.hasMany(DocumentVersion)
+Documents.hasMany(DocumentVersion, {
+    onDelete: 'CASCADE'
+})
 Documents.belongsToMany(Tags, {
     through: 'docs_tags',
     onDelete: 'CASCADE'
 })
 
 // Relações Notes
-Notes.belongsTo(User)
+Notes.belongsTo(User, {
+    onDelete: 'CASCADE'
+})
 Notes.belongsTo(Folders, {
     onDelete: 'SET NULL'
 })
@@ -35,7 +51,9 @@ Notes.belongsToMany(Tags, {
 })
 
 // relações tags
-Tags.belongsTo(User)
+Tags.belongsTo(User, {
+    onDelete: 'CASCADE'
+})
 Tags.belongsToMany(Notes, {
     through: 'note_tags',
     onDelete: 'CASCADE'
@@ -46,6 +64,9 @@ Tags.belongsToMany(Documents, {
 })
 
 //relção das pastas 
+Folders.belongsTo(User, {
+    onDelete: 'CASCADE'
+})
 Folders.hasMany(Documents, {
     onDelete: 'SET NULL'
 })
@@ -54,5 +75,9 @@ Folders.hasMany(Notes, {
 })
 
 // relações das versões dos documentos
-DocumentVersion.belongsTo(User)
-DocumentVersion.belongsTo(Documents)
+DocumentVersion.belongsTo(User, {
+    onDelete: 'CASCADE'
+})
+DocumentVersion.belongsTo(Documents, {
+    onDelete: 'CASCADE'
+})

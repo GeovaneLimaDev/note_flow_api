@@ -36,4 +36,16 @@ export class UserController {
             next(err)
         }
     }
+
+    static async deleteProfile(req, res, next) {
+        try {
+            const userId = req.userid
+            const password = req.body.password
+
+            const message = await UserService.deleteProfile(userId,  password)
+            res.status(200).json(message)
+        } catch (err) {
+            next(err)
+        }
+    }
 }

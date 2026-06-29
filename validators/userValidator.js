@@ -30,7 +30,7 @@ export class UserValidator {
         next()
     }
 
-    static password(req, res, next) {
+    static newPassword(req, res, next) {
         const newPassword = req.body.newPassword
         const currentPassword = req.body.currentPassword
         // validando senhas
@@ -40,6 +40,25 @@ export class UserValidator {
 
         //senha forte?
         if(newPassword.length < 6) {
+            throw new AppErro('Senha deve ter mínimo de 6 caracteres', 400, 'WEAK_PASSWORD')
+        }
+
+        next()
+    }
+
+    static password(req, res, next) {
+        const body = req.body
+        if(!body){
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
+        const password = body.password
+        // validando senhas
+        if(!password) {
+            throw new AppErro('Senha não enviada!', 400, 'EMPTY_BODY')
+        }
+
+        //senha forte?
+        if(password.length < 6) {
             throw new AppErro('Senha deve ter mínimo de 6 caracteres', 400, 'WEAK_PASSWORD')
         }
 
