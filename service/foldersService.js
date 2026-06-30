@@ -15,7 +15,7 @@ export class FoldersService {
 
         await Folders.create({
             UserId: userId,
-            title: title.trim()
+            title: title.trim().toLowerCase()
         })
     }
 

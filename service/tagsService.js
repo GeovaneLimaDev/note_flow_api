@@ -29,7 +29,7 @@ export class TagsService {
             }else{
                 // adiciona no banco 
                 const newTag = {
-                    name: tag,
+                    name: tag.trim().toLowerCase(),
                     UserId: userId
                 }
 

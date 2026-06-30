@@ -10,7 +10,7 @@ export class NotesService {
     static async createNotes(userId, note) {
         const tagsId = await TagsService.addTag(note.tags, userId)
         const newNote = {
-            title: note.title.trim(),
+            title: note.title.trim().toLowerCase(),
             content: note.content,
             UserId: userId,
             deleteAt: null,

@@ -11,7 +11,7 @@ export class DocumentsService {
         const tagsId = await TagsService.addTag(docData.tags, userId)
         //cria objeto que sera salvo no banco
         const createDoc = {
-            title: docData.title.trim(),
+            title: docData.title.trim().toLowerCase(),
             content: docData.content,
             type: 'document',
             UserId: userId,

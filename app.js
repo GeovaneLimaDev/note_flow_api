@@ -13,6 +13,7 @@ import { DocumentsRouter } from "./routes/documentsRoutes.js"
 import { DocumentVersionRouter } from "./routes/DocVersionRouter.js"
 import { TrashRouter } from "./routes/trashRouter.js"
 import { FoldersRoutes } from "./routes/foldersRoutes.js"
+import { SearchRouter } from "./routes/searchRoutes.js"
 
 import dotenv from "dotenv"
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 //routes
+app.use('/search', SearchRouter)
 app.use('/folders', FoldersRoutes)
 app.use('/documents', DocumentVersionRouter)
 app.use('/documents', DocumentsRouter)
