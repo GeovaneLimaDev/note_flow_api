@@ -85,4 +85,41 @@ export class AuthValidator{
         }
         next()
     }
+
+    static forgotPassword(req, res, next){
+        const {email} = req.body
+        //validando email 
+        if(!email){
+            throw new AppErro('E-mail não enviado!', 400, 'EMPTY_BODY')
+        }
+
+        //email válido?
+        const emailModel = /^\S+@\S+\.\S+$/
+        if(!emailModel.test(email)) {
+            throw new AppErro('E-mail inválido', 400, 'EMAIL_INVALID')
+        }
+        next()
+    }
+    
+    static recoverPassword(req, res, next) {
+        const body = req.body
+        if(!body) {
+            throw new AppErro('Dados necessários não enviados!', 400, 'EMPTY_BODY')
+        }
+        //validando senha          
+        if(!body.password) {
+            throw new AppErro('Senha não enviada!', 400, 'EMPTY_BODY')
+        }
+
+        //senha forte?
+        if(body.password.length < 6) {
+            throw new AppErro('Senha deve ter mínimo de 6 caracteres', 400, 'WEAK_PASSWORD')
+        }
+
+        //validando token
+        if(!body.token){
+            throw new AppErro('Token não enviado!', 400, 'EMPTY_BODY')
+        }
+        next()
+    }
 }

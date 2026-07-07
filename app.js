@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express"
 import { conn } from "./db/connection.js"
 import { errorHandler } from "./middlewares/errorMiddleware.js"
@@ -15,14 +16,13 @@ import { TrashRouter } from "./routes/trashRouter.js"
 import { FoldersRoutes } from "./routes/foldersRoutes.js"
 import { SearchRouter } from "./routes/searchRoutes.js"
 
-import dotenv from "dotenv"
 
 export const app = express()
 
-dotenv.config()
+//configurção do body em json
 app.use(express.urlencoded({
     extended: true
-}))
+})) 
 app.use(express.json())
 
 //routes

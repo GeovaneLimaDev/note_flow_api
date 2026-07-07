@@ -4,6 +4,7 @@ import Tags from "../model/Tags.js";
 import Documents from "../model/Documents.js";
 import DocumentVersion from "../model/DocumentVersion.js";
 import Folders from "../model/Folders.js";
+import TokenRecoveryPassword from "../model/TokenRecoveryPassword.js";
 import { conn } from "./connection.js";
 
 // relações user
@@ -20,6 +21,9 @@ User.hasMany(DocumentVersion, {
     onDelete: 'CASCADE'
 })
 User.hasMany(Folders, {
+    onDelete: 'CASCADE'
+})
+User.hasMany(TokenRecoveryPassword, {
     onDelete: 'CASCADE'
 })
 
@@ -48,7 +52,7 @@ Notes.belongsTo(Folders, {
 Notes.belongsToMany(Tags, {
     through: 'note_tags',
     onDelete: 'CASCADE'
-})
+}) 
 
 // relações tags
 Tags.belongsTo(User, {
@@ -79,5 +83,10 @@ DocumentVersion.belongsTo(User, {
     onDelete: 'CASCADE'
 })
 DocumentVersion.belongsTo(Documents, {
+    onDelete: 'CASCADE'
+})
+
+//relação dos tokens de recuperação de senha
+TokenRecoveryPassword.belongsTo(User, {
     onDelete: 'CASCADE'
 })

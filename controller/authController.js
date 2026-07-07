@@ -28,4 +28,26 @@ export class AuthController{
             next(err)
         }
     }
+
+    static async forgotPassword(req, res, next) {
+        try {
+            const {email} = req.body
+
+            const message =  await AuthService.forgotPassword(email)
+            res.status(200).json(message)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async recoverPassword(req, res, next) {
+        try {
+            const token = req.body.token
+            const password = req.body.password
+            const message = await AuthService.recoverPassword(token, password)
+            res.status(200).json(message)
+        } catch (err) {
+            next(err)
+        }
+    }
 } 
