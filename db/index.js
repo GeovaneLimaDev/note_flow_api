@@ -5,6 +5,7 @@ import Documents from "../model/Documents.js";
 import DocumentVersion from "../model/DocumentVersion.js";
 import Folders from "../model/Folders.js";
 import TokenRecoveryPassword from "../model/TokenRecoveryPassword.js";
+import Sessions from "../model/Sessions.js";
 import { conn } from "./connection.js";
 
 // relações user
@@ -24,6 +25,9 @@ User.hasMany(Folders, {
     onDelete: 'CASCADE'
 })
 User.hasMany(TokenRecoveryPassword, {
+    onDelete: 'CASCADE'
+})
+User.hasMany(Sessions, {
     onDelete: 'CASCADE'
 })
 
@@ -88,5 +92,10 @@ DocumentVersion.belongsTo(Documents, {
 
 //relação dos tokens de recuperação de senha
 TokenRecoveryPassword.belongsTo(User, {
+    onDelete: 'CASCADE'
+})
+
+//relação das sessões
+Sessions.belongsTo(User, {
     onDelete: 'CASCADE'
 })

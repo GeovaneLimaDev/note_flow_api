@@ -9,6 +9,7 @@ import fs from "fs/promises"
 import path from "path";
 import replacePlaceholders from "../ultils/replacingPlaceholders.js";
 import { conn } from "../db/connection.js";
+import Sessions from "../model/Sessions.js";
 
 export class AuthService {
     static async register(data){
@@ -29,16 +30,12 @@ export class AuthService {
             password: hash
         })
 
-        //gerando token de autenticação
-        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '24h'})
-
         return {
             user: { 
                 name: user.name,
                 email: user.email,
                 id: user.id,
-            },
-            token: token
+            }
         }
     }
 
@@ -53,15 +50,61 @@ export class AuthService {
         if(!match) {
             throw new AppErro('Senha inválida!', 400, 'INVALID_PASSWORD');            
         }
-        //criando token
-        const token = await jwt.sign({id: userDB.id}, process.env.JWT_SECRET, {expiresIn: '24h'})
+        //criando access token
+        const accessToken = jwt.sign({id: userDB.id, type: 'access'}, process.env.JWT_SECRET_ACCESS, {expiresIn: '15m'})
+        //criando refresh token
+        const refreshToken = jwt.sign({id: userDB.id, type: 'refresh'}, process.env.JWT_SECRET_REFRESH, {expiresIn: '30m'})
+        //cripitografando refresh token
+        const hashToken = crypto.createHash("sha256").update(refreshToken).digest("hex")
+        //salvando hash no banco 
+        await Sessions.create({hashToken: hashToken, UserId: userDB.id})
+
         return {
             user: {
                     name: userDB.name,
                     email: userDB.email,
                     id: userDB.id,
             },
-            token: token
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        }
+    }
+
+    static async refresh(token) {
+        //verificar token 
+        const result = jwt.verify(token, process.env.JWT_SECRET_REFRESH)
+        if(result.type !== 'refresh'){
+            throw new AppErro('Token type inválido!', 401, 'NOT_AUTHORIZED')
+        }
+        const hashTokenVerific = crypto.createHash("sha256").update(token).digest("hex")
+        const tokenDB = await Sessions.findOne({where: {hashToken: hashTokenVerific}})
+        if(!tokenDB) {
+            throw new AppErro('Token inválido!', 401, 'NOT_AUTHORIZED')
+        }
+
+        //criando tokens de acesso e refresh 
+        const accessToken = jwt.sign({id: tokenDB.UserId, type: 'access'}, process.env.JWT_SECRET_ACCESS, {expiresIn: '15m'})
+        const refreshToken = jwt.sign({id: tokenDB.UserId, type: 'refresh'}, process.env.JWT_SECRET_REFRESH, {expiresIn: '15m'})
+        
+        //salvando e deletando tokens do banco
+        const transaction = await conn.transaction()
+        try{
+            //excluir refresh token atigo do banco
+            await Sessions.destroy({where: {hashToken: hashTokenVerific}, transaction})
+            
+            //salvando novo refresh token no banco
+            const hashTokenSave = crypto.createHash("sha256").update(refreshToken).digest("hex")
+            await Sessions.create({UserId: tokenDB.UserId, hashToken: hashTokenSave}, transaction)
+                
+            await transaction.commit()
+            //enviando tokens
+            return {
+                accssToken: accessToken,
+                refreshToken: refreshToken
+            }
+        }catch(err) {
+            await transaction.rollback()
+            throw new AppErro('Algo deu errado, tente novamente mais tarde!', 500, 'INTERNAL_PROBLEM')
         }
     }
 

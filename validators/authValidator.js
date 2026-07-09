@@ -1,5 +1,6 @@
 import { AppErro } from "../error/appError.js"
 import User from "../model/User.js"
+import jwt from "jsonwebtoken"
 
 export class AuthValidator{
     //validação da área de registro 
@@ -83,6 +84,19 @@ export class AuthValidator{
         if(body.password.length < 6) {
             throw new AppErro('Senha deve ter mínimo de 6 caracteres', 400, 'WEAK_PASSWORD')
         }
+        next()
+    }
+
+    static async refresh(req, res, next) {
+        const authHeader = req.headers.authorization
+
+        if(!authHeader){
+            throw new AppErro('Token não enviado!', 400, 'NOT_TOKEN')
+        }
+
+        const token = authHeader.split(' ')[1]
+
+        req.token = token
         next()
     }
 

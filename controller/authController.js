@@ -29,6 +29,16 @@ export class AuthController{
         }
     }
 
+    static async refresh(req, res, next) {
+        try {
+            const refreshToken = req.token
+            const tokens = await AuthService.refresh(refreshToken)
+            res.status(200).json(tokens)
+        }catch(err){
+            next(err)
+        }
+    }
+
     static async forgotPassword(req, res, next) {
         try {
             const {email} = req.body
