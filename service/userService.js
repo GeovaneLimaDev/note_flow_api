@@ -3,6 +3,7 @@ import User from "../model/User.js";
 import bcrypt from "bcryptjs";
 
 export class UserService{
+    //buscando perfil
     static async getProfile(userId){
         const profileDB = await User.findOne({where: {id: userId}})
 
@@ -12,7 +13,7 @@ export class UserService{
             email: profileDB.email
         }
     }
-
+    // atualizando perfil
     static async updateProfile(userId, newEmail, newName) {
         const userDB = await User.findOne({where: {id: userId}})
         if(!userDB){
@@ -37,7 +38,7 @@ export class UserService{
             message: "Perfil atualizado!"
         }
     }
-
+    //atualizando senha
     static async updatePassWord(userId, newPassword, currentPassword) {
         const userDB = await User.findOne({where: {id: userId}})
 
@@ -61,7 +62,7 @@ export class UserService{
             message: 'Senha atualizada!'
         }
     }
-
+    //deletando perfil
     static async  deleteProfile(userId, password) {
         const userDB = await User.findOne({where: {id: userId}})
         if(!userDB){

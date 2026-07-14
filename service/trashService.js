@@ -4,6 +4,7 @@ import Notes from "../model/Notes.js";
 import { AppErro } from "../error/appError.js";
 
 export class TrashService {
+    //buscando todos os itens
     static async getAllTrash(userId) {
         const docsDB = await Documents.findAll({
             where: {
@@ -32,7 +33,7 @@ export class TrashService {
         
         return arrayOrganized
     }
-
+    //restaurando nota
     static async restoreNote(userId, noteId) {
         const noteDB = await Notes.findOne({
             where: {
@@ -50,7 +51,7 @@ export class TrashService {
 
         await Notes.update({deleteAt: null}, {where: {id: noteId}})
     }
-
+    //restaurando documento 
     static async restoreDocument(userId, docId) {
         const docDB = await Documents.findOne({
             where: {
@@ -68,7 +69,7 @@ export class TrashService {
 
         await Documents.update({deleteAt: null}, {where: {id: docId}})
     }
-
+    //deletando definitivamente nota
     static async deleteNote(userId, noteId) {
         const noteDB = await Notes.findOne({
             where: {
@@ -83,10 +84,10 @@ export class TrashService {
         if(!noteDB){
             throw new AppErro('Nota não encontrada na lixeira!', 404, 'NOT_FUND')
         }
-
+        
         await Notes.destroy({where: {id: noteDB.id}})
     }
-
+    //deletando definitivamente documento
     static async deleteDocument(userId, docId) {
         const docDB = await Documents.findOne({
             where: {
@@ -104,7 +105,7 @@ export class TrashService {
 
         await Documents.destroy({where: {id: docDB.id}})
     } 
-
+    //esvaziando lixeira
     static async deleteTrash(userId) {
         const docsDB = await Documents.findAll({
             where: {

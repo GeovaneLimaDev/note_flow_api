@@ -8,7 +8,6 @@ import { TagsService } from "./tagsService.js";
 export class DocumentsService {
     //cria documentos
     static async createDocument(userId, docData){
-        const tagsId = await TagsService.addTag(docData.tags, userId)
         //cria objeto que sera salvo no banco
         const createDoc = {
             title: docData.title.trim().toLowerCase(),
@@ -20,8 +19,8 @@ export class DocumentsService {
         }
 
         const newDoc = await Documents.create(createDoc)
+        
 
-        await newDoc.addTag(tagsId)
     }
     //buscando todos os documentos
     static async getDocumentsAll(userId) {

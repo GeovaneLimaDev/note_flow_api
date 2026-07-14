@@ -24,16 +24,6 @@ export class DocumentsValidator {
         if(body.title.length > 255) {
             throw new AppErro('Título atingiu o máximo de caracteres!', 400, 'VERY_BIG_TITLE');
         }
-        //validando tags
-        if(body.tags){
-            if(!Array.isArray(body.tags)){
-                throw new AppErro('Tags devem ser enviadas em um array!', 400, 'INVALID_FORMATTING');
-            }
-
-            if(body.tags.length > 5) {
-                throw new AppErro('Número máximo de tags atingido!', 400, 'MAXAIMUM_NUMBER')
-            }
-        }
         next()
     }
 

@@ -53,7 +53,7 @@ export class AuthService {
         //criando access token
         const accessToken = jwt.sign({id: userDB.id, type: 'access'}, process.env.JWT_SECRET_ACCESS, {expiresIn: '15m'})
         //criando refresh token
-        const refreshToken = jwt.sign({id: userDB.id, type: 'refresh'}, process.env.JWT_SECRET_REFRESH, {expiresIn: '30m'})
+        const refreshToken = jwt.sign({id: userDB.id, type: 'refresh'}, process.env.JWT_SECRET_REFRESH, {expiresIn: '1h'})
         //cripitografando refresh token
         const hashToken = crypto.createHash("sha256").update(refreshToken).digest("hex")
         //salvando hash no banco 
@@ -84,7 +84,7 @@ export class AuthService {
 
         //criando tokens de acesso e refresh 
         const accessToken = jwt.sign({id: tokenDB.UserId, type: 'access'}, process.env.JWT_SECRET_ACCESS, {expiresIn: '15m'})
-        const refreshToken = jwt.sign({id: tokenDB.UserId, type: 'refresh'}, process.env.JWT_SECRET_REFRESH, {expiresIn: '15m'})
+        const refreshToken = jwt.sign({id: tokenDB.UserId, type: 'refresh'}, process.env.JWT_SECRET_REFRESH, {expiresIn: '1h'})
         
         //salvando e deletando tokens do banco
         const transaction = await conn.transaction()

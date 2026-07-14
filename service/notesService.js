@@ -8,7 +8,6 @@ import { TagsService } from "./tagsService.js";
 export class NotesService {
     //criando nota
     static async createNotes(userId, note) {
-        const tagsId = await TagsService.addTag(note.tags, userId)
         const newNote = {
             title: note.title.trim().toLowerCase(),
             content: note.content,
@@ -19,8 +18,6 @@ export class NotesService {
         }
         
         const newCreate = await Notes.create(newNote) //salvar no banco
-        
-        await newCreate.addTags(tagsId) // faz as relações das notas com as tags 
     }
 
     // buscando todas as notas 

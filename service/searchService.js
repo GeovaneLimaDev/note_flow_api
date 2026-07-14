@@ -7,7 +7,8 @@ import Folders from "../model/Folders.js";
 
 export class SearchService {
     static async getAll (userId, search, tagId){
-        if(!tagId){//validando existencia da tag
+        //validando existencia da tag
+        if(tagId){
             const tagDB = await Tags.findOne({where: {id: tagId, UserId: userId}})
 
             if(!tagDB) {
@@ -19,23 +20,25 @@ export class SearchService {
             title: {[Op.like]: `%${search ? search.toLowerCase() : ""}%`}
         }
         
-        const notesDB = await Notes.findAll({
-            where: where,
-            include: [{
+        let include = null
+        if(tagId) {
+            include = [{
                 model: Tags,
                 attributes: [],
                 where: {id: tagId}
-                
-        }]})
+            }]
+        }
+        
+        
+        const notesDB = await Notes.findAll({
+            where: where,
+            include: include       
+        })
 
         const docDB = await Documents.findAll({
             where: where,
-            include: [{
-                model: Tags,
-                attributes: [],
-                where: {id: tagId}
-                
-        }]})
+            include: include 
+        })
 
         const folderDB = await Folders.findAll({
             where: where
